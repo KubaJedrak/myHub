@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react'
-import { useSignup } from "../hooks/useSignup";
+import { useNavigate } from "react-router-dom"
+import { useSignup } from "../../hooks/useSignup";
 
 export const Signup = () => {
+  const navigate = useNavigate()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [displayName, setDisplayName] = useState("")  
   const [city, setCity] = useState("")
-  const { signup, isPending, error } = useSignup() 
+  const { signup } = useSignup() 
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    signup(email, password, displayName)
+    await signup(email, password, displayName, city)   
+    navigate("/")
   }
   
   return (

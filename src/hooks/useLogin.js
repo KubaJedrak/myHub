@@ -1,5 +1,5 @@
 import { auth, signInWithEmailAndPassword } from "../firebase/config";
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useAuthContext } from './useAuthContext'
 
 export const useLogin = () => {
@@ -15,6 +15,7 @@ export const useLogin = () => {
       const response = await signInWithEmailAndPassword(auth, email, password)  
       console.log(response.user);
       dispatch( {type: 'LOGIN', payload: response.user} )  
+      setIsPending(false)
     } 
     catch(error) {
       setError(error)
