@@ -1,68 +1,101 @@
-// import { collection, addDoc } from "firebase/firestore"; 
 import { useState, useEffect } from 'react'
 import { useAuthContext} from '../../hooks/useAuthContext'
 import { useSetDocument } from '../../hooks/useSetDocument'
+import { collection, addDoc } from "firebase/firestore"; 
+import { getDatabase, ref, child, push } from "firebase/database"
+import { db } from '../../firebase/config'
 
-console.log(typeof addDocument);
+import  delete_icon from "../../icons/delete_icon.svg"
 
-export function ToDoCreate () {
+export const ToDoCreate = () => {
 
   const {user} = useAuthContext()
   const {setDocument} = useSetDocument()
 
   // state of progress
-  const [taskList, setTaskList] = useState(null)
+  const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState("")
+  const [taskListName, setTaskListName] = useState("")
 
+  // update current new task in state
   const handleNewTask = (e) => {
     e.preventDefault()
     setNewTask(e.target.value)
+    console.log(newTask);
   }
 
-  // const updateFirebase = () => {
+  const handleAddNewTask = (e) => {
+    e.preventDefault()
+    setTasks([...tasks, newTask])
+    setNewTask("")
+    console.log(tasks);
+  }
 
-  // }
+  // update task list name
+  const handleTaskListName = (e) => {
+    e.preventDefault()
+    setTaskListName(e.target.value)
+    console.log(taskListName);
 
+  }
+
+  // update task LIST in state
   const handleSubmit = async (e) => {
-    console.log("new task: ", newTask, "|", "task list: ", taskList)
-    e.preventDefault() 
-    setTaskList( [...taskList, newTask] )   
-    console.log("new task list: ", taskList);
+    // e.preventDefault(); 
+    const db = getDatabase();
+
+    let newPostKey = push(child(ref(db), 'taskLists')).key;
+
+    const payload = {
+      docID: newPostKey,
+      userID: user.uid,
+      title: taskListName,
+      tasks: tasks
+    }
+
+    console.log(payload);
+
+    setDocument("taskLists", newPostKey, payload)
+
+    setTaskListName("")
+    setTasks([])
   }
 
-  useEffect( () => {
-    try {
-      const payload = {
-        id: user.uid,
-        tasks: taskList
-      }
-      setDocument("taskLists", user.uid, payload )
-      setNewTask("")
-    } 
-    
-    catch (e) {
-      console.error("Error setting document: ", e);
-    }
-  }, [taskList])
+  const handleDeleteTask = (e) => {
+    console.log(e.target.previousSibling.innerText);
 
-  console.log(taskList);
+    const taskToRemove = tasks.findIndex( task => task === e.target.previousSibling.innerText)
+    tasks.splice(taskToRemove, 1)
+    console.log(tasks);
+  }
 
   return (
     <div>
       <h3> Temporary Title - Create </h3>
-      <form onSubmit={handleSubmit}>
+
+      <form>
+        <label>
+          <input type="text" value={taskListName} onChange={handleTaskListName} />
+        </label>
+      </form>
+
+      <ul>
+        {tasks && tasks.map( (task, index) => {
+          return <li key={index}>
+          <p>{task}</p>
+          <img src={delete_icon} alt="task delete button" onClick={handleDeleteTask}/>
+        </li>
+        })}
+      </ul>
+
+      <form onSubmit={handleAddNewTask}>
         <label>
           <input type="text" value={newTask} onChange={handleNewTask} />
-        </label>
-        
-        {/* <label>
-          <select>
-
-          </select>
-        </label> */}
-        
-        <button>Add</button>
+        </label>       
+        <button>Add Task</button>
       </form>
+
+      <button type="submit" onClick={handleSubmit}>Add List</button>
     </div>
   )
 }

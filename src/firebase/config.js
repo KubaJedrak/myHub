@@ -4,12 +4,12 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 // import 'firebase/storage'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCxDi7laaZSD76uUns2kPlWSakRL1weqF4",
-  authDomain: "myhub-1b6b9.firebaseapp.com",
-  projectId: "myhub-1b6b9",
-  storageBucket: "myhub-1b6b9.appspot.com",
-  messagingSenderId: "731150066819",
-  appId: "1:731150066819:web:8ef1b74e0c2b16d6ea27b6"
+  apiKey: "AIzaSyA1NVy0C5zafdLT0nRpau30IlR6vI3dqd0",
+  authDomain: "myhub-e728b.firebaseapp.com",
+  projectId: "myhub-e728b",
+  storageBucket: "myhub-e728b.appspot.com",
+  messagingSenderId: "65242684718",
+  appId: "1:65242684718:web:a88a75572eb933a82a2ebf"
 };
 
 // init firebaseapp

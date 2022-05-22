@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Login } from './components/fsAuth/Login';
 import { Signup } from './components/fsAuth/Signup';
 import { ToDoModule } from './components/to-do/ToDoSection';
+import { ToDoCreate } from './components/to-do/ToDoCreate';
 
 // styles
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/login" exact element={<Login />} /> 
             <Route path="/signup" exact element={<Signup />} />
             <Route path="/to-do" exact element={<ToDoModule />} />
+            <Route path="/to-do-create" exact element={<ToDoCreate />}></Route>
           </Routes>
         </BrowserRouter>
       )}
