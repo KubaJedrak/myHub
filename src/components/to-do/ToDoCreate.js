@@ -12,10 +12,10 @@ export const ToDoCreate = () => {
   const {user} = useAuthContext()
   const {setDocument} = useSetDocument()
 
-  // state of progress
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState("")
   const [taskListName, setTaskListName] = useState("")
+  const [dataChanged, setDataChanged] = useState(false)
 
   // update current new task in state
   const handleNewTask = (e) => {
@@ -24,6 +24,7 @@ export const ToDoCreate = () => {
     console.log(newTask);
   }
 
+  // add new task to the list of tasks
   const handleAddNewTask = (e) => {
     e.preventDefault()
     setTasks([...tasks, newTask])
@@ -36,14 +37,11 @@ export const ToDoCreate = () => {
     e.preventDefault()
     setTaskListName(e.target.value)
     console.log(taskListName);
-
   }
 
-  // update task LIST in state
+  // send the list to firebase db
   const handleSubmit = async (e) => {
-    // e.preventDefault(); 
     const db = getDatabase();
-
     let newPostKey = push(child(ref(db), 'taskLists')).key;
 
     const payload = {
@@ -52,22 +50,28 @@ export const ToDoCreate = () => {
       title: taskListName,
       tasks: tasks
     }
-
     console.log(payload);
 
     setDocument("taskLists", newPostKey, payload)
-
     setTaskListName("")
     setTasks([])
   }
 
+
   const handleDeleteTask = (e) => {
+    console.log("Tasks before delete:", tasks);
     console.log(e.target.previousSibling.innerText);
 
     const taskToRemove = tasks.findIndex( task => task === e.target.previousSibling.innerText)
     tasks.splice(taskToRemove, 1)
-    console.log(tasks);
-  }
+    console.log("Tasks after delete:", tasks);
+    setTasks(tasks)
+    setDataChanged(true)
+  } // ^ UPDATES DISPLAY ONLY ON THE FIRST DELETION UNLESS STATE CHANGES ON TEXT INPUT!
+
+  useEffect( () => {
+    setDataChanged(false)
+  }, [tasks])
 
   return (
     <div>
@@ -79,14 +83,16 @@ export const ToDoCreate = () => {
         </label>
       </form>
 
-      <ul>
-        {tasks && tasks.map( (task, index) => {
-          return <li key={index}>
-          <p>{task}</p>
-          <img src={delete_icon} alt="task delete button" onClick={handleDeleteTask}/>
-        </li>
-        })}
-      </ul>
+      {tasks && <div>
+        <ul>
+          {tasks.map( (task, index) => {
+            return <li key={index}>
+            <p>{task}</p>
+            <img src={delete_icon} alt="task delete button" onClick={handleDeleteTask}/>
+          </li>
+          })}
+        </ul>
+      </div>}
 
       <form onSubmit={handleAddNewTask}>
         <label>
