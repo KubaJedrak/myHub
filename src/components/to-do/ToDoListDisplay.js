@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import  delete_icon from "../../icons/delete_icon.svg"
+import  edit_icon from "../../icons/edit_icon.svg"
 import { useSetDocument } from "../../hooks/useSetDocument"
 import { doc, deleteDoc, getFirestore } from "firebase/firestore";
 // import {  } from "firebase/database";
@@ -37,6 +38,10 @@ export const ToDoListDisplay = (parentData) => {
       console.log(allLists);
       setListReady(false)
       setFocusedList(null)
+  }
+
+  const handleEditList = () => {
+
   }
 
   const handleDeleteTask = (e) => {
@@ -97,6 +102,7 @@ export const ToDoListDisplay = (parentData) => {
             return <li key={index}>
               <p onClick={handleClick}>{list.title}</p>
               <img src={delete_icon} alt="list delete button" onClick={handleDeleteList} />
+              <img src={edit_icon} alt="list edit button" onClick={handleEditList} />
             </li>
           } )}
         </ul> 

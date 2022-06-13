@@ -15,7 +15,6 @@ export const ToDoCreate = () => {
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState("")
   const [taskListName, setTaskListName] = useState("")
-  const [dataChanged, setDataChanged] = useState(false)
 
   // update current new task in state
   const handleNewTask = (e) => {
@@ -57,7 +56,6 @@ export const ToDoCreate = () => {
     setTasks([])
   }
 
-
   const handleDeleteTask = (e) => {
     console.log("Tasks before delete:", tasks);
     console.log(e.target.previousSibling.innerText);
@@ -66,12 +64,7 @@ export const ToDoCreate = () => {
     tasks.splice(taskToRemove, 1)
     console.log("Tasks after delete:", tasks);
     setTasks(tasks)
-    setDataChanged(true)
   } // ^ UPDATES DISPLAY ONLY ON THE FIRST DELETION UNLESS STATE CHANGES ON TEXT INPUT!
-
-  useEffect( () => {
-    setDataChanged(false)
-  }, [tasks])
 
   return (
     <div>

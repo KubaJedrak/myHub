@@ -30,8 +30,8 @@ function App() {
              {/* ADD ROUTE GUARDING BELOW (RR v6)  */}
             <Route path="/login" exact element={<Login />} /> 
             <Route path="/signup" exact element={<Signup />} />
-            <Route path="/to-do" exact element={<ToDoModule />} />
-            <Route path="/to-do-create" exact element={<ToDoCreate />}></Route>
+            <Route path="/lists" exact element={<ToDoModule />} />
+            <Route path="/lists-create" exact element={<ToDoCreate />}></Route>
           </Routes>
         </BrowserRouter>
       )}

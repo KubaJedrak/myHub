@@ -14,6 +14,9 @@ export const ToDoModule = () => {
   const [data, setData] = useState(undefined)
   const [lists, setLists] = useState([])
   const [dataReceived, setDataReceived] = useState(false)
+  const [addNewList, setAddNewList] = useState(false)
+  const [displayAllLists, setDisplayAllLists] = useState(false)
+  // const [listToEdit, setListToEdit] = useState(false)
    
   const {user} = useAuthContext()
 
@@ -48,14 +51,33 @@ export const ToDoModule = () => {
 
   }, [data])
 
+  const handleDisplayAllLists = () => {
+    setAddNewList(false)
+    setDisplayAllLists(true)
+  }
+  
+  const handleShowCreateList = () => {
+    setDisplayAllLists(false)
+    setAddNewList(true)
+  }
+
+
+  // SPLIT UP VARIOUS MODULES, ADD NAVIGATION (RRD) AND ADD LINKS!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   return (    
     <div>
 
-      {dataReceived && <ToDoListDisplay lists={lists} />}
+      <div className="window-selector-buttons button">
+        <button className="window-selector-button button" onClick={handleDisplayAllLists}>All Lists</button>
+        <button className="window-selector-button button" onClick={handleShowCreateList}>Create New List</button>
+      </div>
+
+      {displayAllLists && <ToDoListDisplay lists={lists} />}
       {!dataReceived && <p>Loading...</p>}
 
-      <ToDoCreate />
-      
+      {addNewList && <ToDoCreate />}
+
     </div>
   )
 }
