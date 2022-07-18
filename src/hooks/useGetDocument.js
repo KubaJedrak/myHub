@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { doc, getDoc } from "firebase/firestore"; 
+import { doc, getDoc, onSnapshot } from "firebase/firestore"; 
 import { db } from '../firebase/config'
 
 export const useGetDocument = () => {
@@ -8,7 +8,7 @@ export const useGetDocument = () => {
   const [isPending, setIsPending] = useState(false)
   const [isCancelled, setIsCancelled] = useState(false) 
 
-  const getDocument = async (collection, docName, userID) => {
+  const getDocument = async (collection, docName) => {
     setError(null)
     setIsPending(true) 
 
@@ -17,12 +17,11 @@ export const useGetDocument = () => {
     try {
       const docRef = doc( db, collection, docName )
       docSnap = await getDoc(docRef)
-
-
       if (!isCancelled) {
         setIsPending(false)
         setError(null)
       }
+      return docSnap.data()
     }
     catch(error) {
       if (!isCancelled) {
@@ -31,7 +30,7 @@ export const useGetDocument = () => {
       }
     }
 
-    return docSnap
+    // unsubscribe()
   }
 
   useEffect( () => {
