@@ -5,5 +5,98 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
 }
 
+.title {
+  font-size:48px;
+
+  justify-self: center;
+  justify-items: center;
+  align-items: center;
+
+}
+
+
+
+.list {
+  min-width: 500px;
+  min-height: 500px;
+
+  max-width: 90%;
+  max-height: 90%;
+
+  border: 1px solid;
+
+  margin: 0 auto;
+}
+
+.list-ctrl-buttons {
+  width: 150px;
+  height: 50px;
+
+  margin: 0 20px 0 auto;
+  
+}
+
+.list-container {
+
+  width: 100%;
+  height: 80%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 10px;
+
+  align-items: center;
+
+}
+
+
+
+.list-table {
+
+}
+
+.list-position-container {
+  list-style-type: none;
+}
+
+
+.icon-big {
+  width: 48px;
+  height: 48px;
+}
+
+.icon-medium {
+  width: 36px;
+  height: 36px;
+}
+
+.icon-small {
+  width: 24px;
+  height: 24px;
+}
+
+.button {
+  border-radius: 20%;
+}
+
+.button-active {
+  background-color: rgba(6, 159, 219, 0.5);
+}
+
+
+
+
+/* --- MISC --- */ 
+
+.hidden {
+  width: 0px;
+  height: 0px;
+
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+}

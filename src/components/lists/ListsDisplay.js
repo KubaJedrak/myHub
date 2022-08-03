@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import  delete_icon from "../../icons/delete_icon.svg"
-import { doc, deleteDoc, getFirestore } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import { Link } from "react-router-dom"
 
 import { db } from "../../firebase/config"
 
 import VerifyPrompt from "../utility/VerifyPrompt";
 
+// ADD ABORT CONTROLLER
 
 export const ListsDisplay = (parentData) => {
 
@@ -48,8 +49,8 @@ export const ListsDisplay = (parentData) => {
   }
 
   const data = {
-    title: "test",
-    message: "test test test",
+    title: "Warning",
+    message: "Are you sure you want to remove this list?",
     acceptFunc,
     declineFunc
   }

@@ -3,7 +3,6 @@ import { useAuthContext} from '../../hooks/useAuthContext'
 import { useSetDocument } from '../../hooks/useSetDocument'
 // import { collection, addDoc } from "firebase/firestore"; 
 import { getDatabase, ref, child, push } from "firebase/database"
-// import { db } from '../../firebase/config'
 
 import { useNavigate } from "react-router-dom";
 
@@ -42,13 +41,13 @@ export const ListCreate = () => {
   // send the list to firebase db
   const handleSubmit = (e) => {
     const db = getDatabase();
-    let newPostKey = push(child(ref(db), 'lists')).key;
+    let newPostKey = push(child(ref(db), 'lists')).key; // replace with addDoc() // (new) docRef ???
 
     const payload = {
       docID: newPostKey,
       userID: user.uid,
       title: listTitle,
-      items: items
+      items
     }
     setDocument("lists", newPostKey, payload)
     setListTitle("")
@@ -70,7 +69,7 @@ export const ListCreate = () => {
 
       <form>
         <label>
-          <input type="text" value={listTitle} onChange={handleListTitle} />
+          <input type="text" value={listTitle} onChange={handleListTitle} required />
         </label>
       </form>
 
@@ -87,7 +86,7 @@ export const ListCreate = () => {
 
       <form onSubmit={handleAddNewTask}>
         <label>
-          <input type="text" value={newTask} onChange={handleNewTask} />
+          <input type="text" value={newTask} onChange={handleNewTask} required />
         </label>       
         <button>Add Position</button>
       </form>
