@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import cloneDeep from 'lodash/cloneDeep'
 
 import { useUpdateDocument } from "../../hooks/useUpdateDocument";
 import VerifyPrompt from "../utility/VerifyPrompt";
+import {Item} from "./Item"
 
 import delete_icon from "../../icons/delete_icon.svg"
 import edit_icon from "../../icons/edit_icon.svg"
+import add_icon from "../../icons/save_icon.svg"
 import save_icon from "../../icons/save_icon.svg"
+
 
 // TO DO: 
   // 1. add prompts where needed
@@ -20,8 +23,16 @@ export const List = (parentData) => {
 
   const [data, setData] = useState(null)
   const [title, setTitle] = useState("")
+  const [items, setItems] = useState(null)
   const [originalTitle, setOriginalTitle] = useState(null)
   const [originalItems, setOriginalItems] = useState(null)
+
+  const [newItem, setNewItem] = useState("")
+  const [newItems, setNewItems] = useState(null)
+
+  const editModeToggleButtonRef = useRef(null)
+
+  // const newItemRef = useRef(null)
 
   const [editMode, setEditMode] = useState(false)
 
@@ -33,16 +44,20 @@ export const List = (parentData) => {
   // ------- LIST FUNCTIONS: ------- 
   // --- Toggle Edit State: --- 
 
-  const handleEditList = (e) => {
+  const handleEditListButton = (e) => {
 
     if (!editMode) {
       setEditMode(true)
       e.target.classList.toggle('button-active')
     } 
 
-    if (editMode) {
+    if (editMode ) {
 
-      // throw prompt!!!! TO DO!
+      setItems(originalItems)
+      
+      // TO DO -  ADD CONDITION HERE (to prevent display of discarded changes)
+
+      // TO DO - throw prompt to confirm changes!
 
       setEditMode(false) 
       e.target.classList.toggle('button-active')
@@ -58,77 +73,57 @@ export const List = (parentData) => {
 
   // --- Items: --- 
 
-  const handleItemFocus = (e) => {
+  // const handleUpdateItem = (e) => {
 
-    const grandparentNode = e.target.parentNode.parentNode
-    const firstChild = e.target.parentNode.firstChild
-    const lastChild = e.target.parentNode.lastChild
-    let previousFocus = null
 
-    // -- Update Focus: -- 
-    if (currItemTargetID) {
-      previousFocus = currItemTargetID
-    }
-    setCurrItemTargetID(e.target.parentNode.parentNode.id)
+  //   if (e.keyCode === 13) {
+  //     saveItemChanges()
+  //   }    
 
-    // -- Change Visibility of Children: -- 
-    if (previousFocus !== null) {
-      grandparentNode.children[previousFocus].firstChild.style.display = ""
-      grandparentNode.children[previousFocus].lastChild.style.display = "none"
-    }
+  //   if (e.keyCode === 27) {
+  //     discardItemChanges()
+  //   }
+  // }
 
-    // JS-y version:
-    if (lastChild.style.display === "none" ) {
-      firstChild.style.display = "none"
-      lastChild.style.display = "inline-block"
-    } 
+  // 
+
+
+  // ADD NEW ITEM TO THE LIST ARRAY
+  const updateNewItem =(e) => {
+    setNewItem(e.target.value)
+    console.log(newItem);
   }
 
-  const handleItemChange = (e) => {
-    setCurrItemTargetVal(e.target.value)
+  const addNewItem = () => {
+    setItems([...items, newItem])
+    setNewItem("")
   }
 
-  const handleUpdateItem = (e) => {
-    const listPositionChildren = e.target.parentNode.parentNode.parentNode.children // Yeah, I did that >.>
-
-    if (e.keyCode === 13) {
-      saveItemChanges(listPositionChildren)
-    }    
-
-    if (e.keyCode === 27) {
-      discardItemChanges(listPositionChildren)
-    }
+  // DELETE EXISTING ITEM FROM LIST array
+  const deleteItem = (id) => {
+    const tempData = items
+    tempData.splice(id, 1)
   }
 
-  const saveItemChanges = (node) => {
-    const tempItems = data.items 
-    tempItems[currItemTargetID] = currItemTargetVal
-
-    setCurrItemTargetVal("")
-    node[currItemTargetID].firstChild.style.display = ""
-    node[currItemTargetID].lastChild.style.display = "none"
-  }
-
-  const discardItemChanges = (node) => {
-    setCurrItemTargetVal("")
-    node[currItemTargetID].firstChild.style.display = ""
-    node[currItemTargetID].lastChild.style.display = "none"
-  }
-
+  // SAVE CHANGES TO FIREBASE
   const saveChanges = () => {
     data.title = title //
 
     // TO DO    -> THROW PROMPT BEFORE TRIGERRING BELOW
 
-    if (data.items !== originalItems) {
-      updateDocument("lists", data.docID, "items", data.items)
+    if (items !== originalItems) {
+      updateDocument("lists", data.docID, "items", items)
     }
 
-    if (data.title !== originalTitle) {
+    if (items !== originalTitle) {
       updateDocument("lists", data.docID, "title", data.title)
     }
 
     setEditMode(false)
+    console.log(editModeToggleButtonRef);
+    console.log(editModeToggleButtonRef.current);
+
+    editModeToggleButtonRef.current.classList.toggle('button-active')
   }
 
   // --- Init State Updates : --- 
@@ -137,6 +132,7 @@ export const List = (parentData) => {
     setData(passedData)
     if (passedData) {
       setTitle(passedData.title)
+      setItems(passedData.items)
       setOriginalTitle(cloneDeep(passedData.title))
       setOriginalItems(cloneDeep(passedData.items))
     }
@@ -153,14 +149,15 @@ export const List = (parentData) => {
           src={edit_icon} 
           alt="list edit button" 
           className="icon icon-medium button" 
-          onClick={handleEditList}
+          onClick={handleEditListButton}
+          ref={editModeToggleButtonRef}
         />         
         <img src={delete_icon} alt="list delete button" className="icon icon-medium" />
-
       </div>
 
       {data && title && (
         <div className="list-container">
+          {/* TITLE CHANGE INPUT */}
           {!editMode && <h3 className="list-title title-medium">{title}</h3>}
           {editMode && <input 
             type="text" 
@@ -175,7 +172,7 @@ export const List = (parentData) => {
 
             {/* DISPLAY OF CURRENT LIST */}
             {!editMode && <>
-              {data.items.map((item, index) => {
+              {items.map((item, index) => {
                 return (
                   <li key={index} id={index} className="list-position-container">
                     <p className="list-position">{item}</p>
@@ -186,29 +183,19 @@ export const List = (parentData) => {
 
             {/* EDITABLE VERSION OF CURRENT LIST */}
             {editMode && <>
-              {data.items.map((item, index) => {
+              {items.map((item, index) => {
                 return (
-                  <li key={index} id={index} className="list-position-container" onClick={handleItemFocus}>
-                    <p 
-                      className="list-position"
-                    >{item}</p>
-                    
-                    {/* Save button bugs out on numerous clicks --> investigate */}
-                    <div style={{display: "none"}}>     
-                      <input 
-                        type="text"
-                        placeholder={item}
-                        value={currItemTargetVal}
-                        onChange={handleItemChange}
-                        onKeyDown={handleUpdateItem}     
-                        tabIndex="0"
-                        id={index}           
-                      />
-                      <img src={save_icon} alt="item save button" className="icon icon-small" /> 
-                    </div>
-                  </li>
+                  <Item item={item} index={index} data={items} deleteItem={deleteItem} />
                 )
               })}
+              <div>
+                <input
+                  type="text"
+                  value={newItem}
+                  onChange={updateNewItem}
+                />
+                <img src={add_icon} alt="item edit save button" className="icon icon-small" onClick={addNewItem} />
+              </div>
             </>}
           </ul>
           {editMode && <button className="btn btn-list-submit" onClick={saveChanges} >Save Changes</button>}

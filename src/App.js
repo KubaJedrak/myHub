@@ -10,6 +10,9 @@ import { ListsSection } from './components/lists/ListsSection';
 import { ListCreate } from './components/lists/ListCreate';
 import { SingleList } from './components/lists/SingleList';
 
+import { Test } from './components/Test'
+
+
 // styles
 
 
@@ -31,6 +34,7 @@ function App() {
             <Route path="/lists" exact element={<ListsSection />} />
             <Route path="/lists/create" exact element={<ListCreate />}></Route>
             <Route path="/lists/:id" exact element={<SingleList />} />
+            <Route path="/test" exact element={<Test />} />
           </Routes>
         </BrowserRouter>
       )}

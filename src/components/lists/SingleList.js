@@ -15,7 +15,7 @@ import { doc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase/config"
 
 import { useNavigate } from "react-router-dom";
-import { List } from "../utility/List";
+import { List } from "./List";
 
 export const SingleList = () => {
 
@@ -169,14 +169,6 @@ export const SingleList = () => {
     fetchData()
   }, [])
 
-  // useEffect( () => {
-  //   console.log("Data changed somehow:");
-  //   console.log("data:", data);
-  //   console.log("-----------------");
-  // })
-
-  // FINISH THE EDIT MODE AND DELETE FUNCTIONS
-
   return (
 
     <div className="box-container single-list-display">
@@ -186,90 +178,4 @@ export const SingleList = () => {
 
     
   )
-
-  // return (
-  //   <div>
-
-  //     {fetchIsPending && <p>Loading...</p>}
-  //     {fetchError && <p>{fetchError}</p>}
-
-  //     {data && (
-  //       <div>
-
-  //         
-
-  //         {/* TOGGLE LIST EDIT MODE: */}
-  //         {!editMode && <img src={edit_icon} alt="list edit button" onClick={handleEditList} />}
-  //         {editMode && <img src={close_icon} alt="list edit mode exit button" onClick={discardChanges} />}
-          
-  //         <img src={delete_icon} alt="list delete button" onClick={deleteList} />
-
-  //         {/* LIST TITLE */}
-  //         <div>
-  //           <div>
-  //             {!editMode && <h4>{data.title}</h4>}
-  //             {editMode && (
-  //               <input type="text" onChange={handleTitleChange} value={title} />
-  //             )}  
-  //           </div>       
-  //         </div>
-
-  //         {/* Show list NOT in edit mode */}
-  //         {!editMode && (
-  //           <ul>
-  //             {data.items.map( (element, index) => {
-  //               return (
-  //                 <li key={index} id={index}>
-  //                   {element}
-  //                 </li>
-  //               )
-  //             })}
-  //           </ul>
-  //         )}
-
-  //         {/* Show list IN EDIT MODE */}
-  //         {editMode && (
-  //           <div>
-  //             <ul>
-  //               {data.items.map( (element, index) => {
-  //                 return (
-  //                   <li key={index} id={index} onClick={handleToggleEdit}>
-  //                     {!editEnabled && <p>{element}</p>}
-  //                     {editEnabled && <input type="text" // currentTargetID === index && 
-  //                       placeholder={element} 
-  //                       value={currentTargetVal} 
-  //                       onClick={handleTarget} 
-  //                       onChange={handleUpdateItem} 
-  //                     />}
-  //                   </li>
-  //                 )
-  //               })}
-
-  //               {/* {!currentTargetID && (<div>
-                                    
-  //                   {data.items.map( (element, index) => {
-  //                     return (
-  //                       <li key={index} id={index} onClick={handleTarget}>
-  //                         {element}
-  //                       </li>
-  //                     )}
-  //                   )}
-  //                 </div>
-  //               )}
-
-  //               {currentTargetID && tempItems.map((element, index) => {
-  //                 return (
-  //                   <li key={index} id={index}>{element}</li>
-  //                 )}
-  //               )} */}
-
-  //             </ul>
-  //                                    {/* ADD NEW POSITIONS */}
-  //             <button className="button confirm-button" onClick={saveChanges}>Save changes</button>
-  //           </div>
-  //         )}         
-  //       </div>
-  //     )}
-  //   </div>
-  // )
 }
