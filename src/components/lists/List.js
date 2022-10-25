@@ -101,8 +101,7 @@ export const List = (parentData) => {
 
   // DELETE EXISTING ITEM FROM LIST array
   const deleteItem = (id) => {
-    const tempData = items
-    tempData.splice(id, 1)
+    items.splice(id, 1)
   }
 
   // SAVE CHANGES TO FIREBASE
@@ -120,8 +119,6 @@ export const List = (parentData) => {
     }
 
     setEditMode(false)
-    console.log(editModeToggleButtonRef);
-    console.log(editModeToggleButtonRef.current);
 
     editModeToggleButtonRef.current.classList.toggle('button-active')
   }
