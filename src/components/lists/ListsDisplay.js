@@ -1,42 +1,21 @@
-import { useEffect, useState } from "react";
-import  delete_icon from "../../icons/delete_icon.svg"
-import { doc, deleteDoc } from "firebase/firestore";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom"
-
-import { db } from "../../firebase/config"
-
+import { ListContext } from "../../context/ListContext"
 import VerifyPrompt from "../utility/VerifyPrompt";
+import delete_icon from "../../icons/delete_icon.svg"
 
-// ADD ABORT CONTROLLER
+export const ListsDisplay = () => {
 
-export const ListsDisplay = (parentData) => {
-
-  const [lists, setLists] = useState(parentData.lists)
+  const {data} = useContext(ListContext)
+  const {deleteList, passListID} = useContext(ListContext)
   const [togglePopup, setTogglePopup] = useState(false)
   const [deleteApproved, setDeleteApproved] = useState(false)
   const [listToDelete, setListToDelete] = useState(null)
-  const [indexToDelete, setIndexToDelete] = useState(null)
   
   const handleDeleteList = (e) => {
-    const indexToRemove = lists.findIndex( list => list.title === e.target.previousSibling.innerText)
-    const listID = lists[indexToRemove].docID
-
-    console.log(indexToRemove);
-
-    setIndexToDelete(indexToRemove)
+    const listID = data[e.target.parentNode.value].docID
     setListToDelete(listID)
     setTogglePopup(true)
-  }
-
-  const deleteList = () => {
-
-    try {
-      deleteDoc(doc(db, "lists", listToDelete))
-      lists.splice(indexToDelete, 1)
-    } 
-    catch {
-      throw Error
-    }
   }
 
   const acceptFunc = () => {
@@ -48,7 +27,7 @@ export const ListsDisplay = (parentData) => {
     setTogglePopup(false)
   }
 
-  const data = {
+  const popUpData = {
     title: "Warning",
     message: "Are you sure you want to remove this list?",
     acceptFunc,
@@ -57,26 +36,28 @@ export const ListsDisplay = (parentData) => {
 
   useEffect( () => {
     if (deleteApproved) {
-      deleteList()
+      deleteList(listToDelete)
       setDeleteApproved(false)
     }
-  }, [deleteApproved])
+  }, [deleteApproved, deleteList, listToDelete]) // why should I add these as dependencies when they never change anyway?
 
-  // KEEP THE EDIT BUTTON AND CHANGE IT TO LINK (TO SINGLELIST.js) WITH EDIT MODE INITIALIZATION?
+  // --------------------------
 
+  const goToSingleList = (e) => {
+    const {docID} = data[e.target.parentNode.value]
+    passListID(docID)
+  }
+  
   return (
     <div> 
-      {lists.length > 0 && (
+      {data.length > 0 && (
         <div className="lists">
           <h3> Available Lists: </h3>
           <ul>
-            {lists.map( (list, index) => {
+            {data.map( (list, index) => {
               return (
-                <li key={index}>
-                  <Link to={`/lists/${list.docID}`}>
-                    <p>{list.title}</p>
-                    {/* <img src={edit_icon} alt="list edit button" onClick={handleEditList} /> */}
-                  </Link>
+                <li key={index} value={index}>
+                  <p onClick={goToSingleList}>{list.title}</p>
                   <img src={delete_icon} alt="list delete button" onClick={handleDeleteList} />
                 </li>
               )
@@ -84,8 +65,8 @@ export const ListsDisplay = (parentData) => {
           </ul> 
         </div>
       )}
-      {lists.length === 0 && <p>No lists available</p>}
-      {togglePopup && <VerifyPrompt data={data} />}
+      {data.length === 0 && <p>No lists available</p>}
+      {togglePopup && <VerifyPrompt data={popUpData} />}
     </div>
   )
 }

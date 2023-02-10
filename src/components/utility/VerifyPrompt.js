@@ -1,14 +1,7 @@
 import React from 'react'
 
-import { useState } from 'react'
-
-export default function VerifyPrompt(parentData) {
-
-  const data = parentData.data
-  const title = data.title
-  const message = data.message
-  const acceptFunc = data.acceptFunc
-  const declineFunc = data.declineFunc
+export default function VerifyPrompt(popUpData) {
+  const {title, message, acceptFunc, declineFunc} = popUpData.data
 
   return (
     <article>

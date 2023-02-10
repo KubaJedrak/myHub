@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import { useAuthContext} from '../../hooks/useAuthContext'
 import { useSetDocument } from '../../hooks/useSetDocument'
-// import { collection, addDoc } from "firebase/firestore"; 
 import { getDatabase, ref, child, push } from "firebase/database"
-
 import { useNavigate } from "react-router-dom";
-
 import  delete_icon from "../../icons/delete_icon.svg"
+
 
 export const ListCreate = () => {
 
   const navigate = useNavigate()
+  const _ = require('lodash');
 
   const {user} = useAuthContext()
   const {setDocument} = useSetDocument()
@@ -39,7 +38,7 @@ export const ListCreate = () => {
   }
 
   // send the list to firebase db
-  const handleSubmit = (e) => {
+  const handleSubmit = () => {
     const db = getDatabase();
     let newPostKey = push(child(ref(db), 'lists')).key; // replace with addDoc() // (new) docRef ???
 
@@ -56,16 +55,15 @@ export const ListCreate = () => {
   }
 
   const handleDeleteTask = (e) => {
-    console.log("PING");
-    console.log(items);
-    const indexToRemove = items.findIndex( list => list === e.target.previousSibling.innerText)
-    items.splice(indexToRemove, 1)
-    console.log(items);
+    let deepItems = _.cloneDeep(items)
+    deepItems.splice(e.target.parentNode.value, 1)
+    setItems(deepItems)
   }
 
   return (
     <div>
-      <h3> Temporary Title - Create </h3>
+      {/* REPLACE THE TITLE BELOW WITH A MODULE LATER? */}
+      <h3> Create a new list </h3>
 
       <form>
         <label>
@@ -76,10 +74,11 @@ export const ListCreate = () => {
       {items && <div>
         <ul>
           {items.map( (task, index) => {
-            return <li key={index}>
-            <p>{task}</p>
-            <img src={delete_icon} alt="list delete button" onClick={handleDeleteTask}/>
-          </li>
+            return (
+              <li key={index} value={index}>
+                <p>{task}</p>
+                <img src={delete_icon} alt="list delete button" onClick={handleDeleteTask}/>
+              </li>)
           })}
         </ul>
       </div>}

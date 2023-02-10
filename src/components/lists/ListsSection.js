@@ -1,54 +1,35 @@
-import { Link } from "react-router-dom"
-import { useState, useEffect, useCallback } from "react"
-
+import { useContext, useEffect } from "react"
+import { ListsDisplay } from "../lists/ListsDisplay"
 import { ListCreate } from "./ListCreate"
-import { ListsDisplay } from "./ListsDisplay"
-
-import { useAuthContext} from '../../hooks/useAuthContext'
-import { useQueryDB } from "../../hooks/useQueryDB"
-
-import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
-import { db } from '../../firebase/config'
+import { List } from "./List"
+import { ListContext } from "../../context/ListContext"
 
 export const ListsSection = () => {
 
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-   
-  const {user} = useAuthContext()
-  // const {queryDB, isPending, error} = useQueryDB()
+  const { data, error, listID, passListID } = useContext(ListContext)
+  const { displayModeEnabled, singleModeEnabled, createModeEnabled } = useContext(ListContext)
+  const { toggleSingle, toggleCreate} = useContext(ListContext)
 
-  // get query data from Firebase
-  const getData = useCallback( async () => {
-
-    try {
-      let items = []
-      const dbRef = collection(db, "lists")
-      const q = query(dbRef, where("userID", "==", user.uid) )
-      const unsubscribe = onSnapshot (q, (querySnapshot) => {
-        querySnapshot.forEach( item => {
-          items.push(item.data())
-        })
-        setData(items)
-      })
-    } catch {
-      setError(error.message)
+  useEffect(() => {
+    if (listID) {     // NEED TO CLEAR THIS ON RETURN FROM LIST MODULE 
+      // (otherwise doesnt allow to access the same element again until another is selected)
+      toggleSingle()
     }
-  }, [error, user.uid])
+  }, [listID])
 
-  useEffect( () => {
-    getData()
-  }, [getData])
-
-  return (    
+  return (
     <div>
-
-      <Link to="/lists/create">Create New List</Link>
-
-      {data && <ListsDisplay lists={data} />}
+      <button onClick={toggleCreate}>Create New List</button>
+      {data && (
+        <>
+          {displayModeEnabled && <ListsDisplay lists={data} />}
+          {singleModeEnabled && <List value={listID} />} 
+          {createModeEnabled && <ListCreate />}
+          {/* ADD EDIT MODE OPTION AND ICON TO ABOVE? */}
+        </>
+      )}
       {!data && <p>Loading...</p>}
       {error && <p>{error}</p>}
-
     </div>
   )
 }

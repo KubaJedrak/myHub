@@ -1,13 +1,8 @@
-import { useState, useEffect, useRef } from "react"
-
+import { useState } from "react"
 import add_icon from "../../icons/save_icon.svg"
 import close_icon from "../../icons/close_icon.svg"
-import delete_icon from "../../icons/delete_icon.svg"
 
-
-export const Item = ({item, index, data, deleteItem}) => {
-
-  console.log(deleteItem);
+export const Item = ({ item, index, data }) => {
 
   const [listItem, setListItem] = useState(item)
   const [editMode, setEditMode] = useState(false)
@@ -24,19 +19,27 @@ export const Item = ({item, index, data, deleteItem}) => {
     setNewItemValue(e.target.value)
   }
 
-  const deleteItemFunc = (e) => {
-    console.log(e.target.id);
-    deleteItem(e.target.id)
-
-    console.log(data);
-
-    // TO DO - STILL DOES NOT UPDATE STATE AT THE RIGHT TIME EVEN IF THE CHANGE DOES HAPPEN PROPERLY ????
-  }
-
   const discardChanges = () => {
     setEditMode(false)
     clearStates()
   }
+
+
+  // --- Items: --- 
+
+  // const handleUpdateItem = (e) => {
+
+
+  //   if (e.keyCode === 13) {
+  //     saveItemChanges()
+  //   }    
+
+  //   if (e.keyCode === 27) {
+  //     discardItemChanges()
+  //   }
+  // }
+
+  // 
 
   // Save changes to List Item
   const saveChanges = () => { 
@@ -58,12 +61,6 @@ export const Item = ({item, index, data, deleteItem}) => {
     setNewItemValue("")
   }
 
-  // MISC - TO DO: add key press detection
-  const onKeyPressed = (e) => {
-    console.log(e.key);
-  }
-
-
   return (
     
     <li key={index} className="list-position-container" >
@@ -71,7 +68,6 @@ export const Item = ({item, index, data, deleteItem}) => {
       {!editMode && (
         <div key={index}>
           <p onClick={toggleEditMode}>{listItem}</p>          
-          <img src={delete_icon} alt="item delete button" className="icon icon-small" onClick={deleteItemFunc} id={index} />
         </div>
       )}
 
@@ -87,6 +83,7 @@ export const Item = ({item, index, data, deleteItem}) => {
           <img src={close_icon} alt="item edit cancel button" className="icon icon-small" onClick={discardChanges} />
         </div>
       )}
+      
     </li>
   )
 }

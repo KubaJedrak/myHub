@@ -6,12 +6,9 @@ import { Home } from './components/Home';
 import { Navbar } from './components/Navbar';
 import { Login } from './components/fsAuth/Login';
 import { Signup } from './components/fsAuth/Signup';
-import { ListsSection } from './components/lists/ListsSection';
-import { ListCreate } from './components/lists/ListCreate';
-import { SingleList } from './components/lists/SingleList';
+import { ListsWrapper } from './components/lists/ListsWrapper';
 
-import { Test } from './components/Test'
-
+import { TestWrapper } from './components/test/TestWrapper'
 
 // styles
 
@@ -28,13 +25,13 @@ function App() {
           <Routes>
             <Route path="/" exact element={<Home />} />       
 
-             {/* ADD ROUTE GUARDING BELOW (RR v6)  */}
+             {/* ADD ROUTE GUARDING BELOW (RR v6) - TO CATCH EXEMPTIONS/FAILED URLs */}
+
             <Route path="/login" exact element={<Login />} /> 
             <Route path="/signup" exact element={<Signup />} />
-            <Route path="/lists" exact element={<ListsSection />} />
-            <Route path="/lists/create" exact element={<ListCreate />}></Route>
-            <Route path="/lists/:id" exact element={<SingleList />} />
-            <Route path="/test" exact element={<Test />} />
+            <Route path="/lists" exact element={<ListsWrapper />} />
+
+            {/* <Route path="/test" exact element={<TestWrapper />} /> */}
           </Routes>
         </BrowserRouter>
       )}
