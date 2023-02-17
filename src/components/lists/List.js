@@ -79,35 +79,25 @@ export const List = (listID) => {
 
   // --- Delete item from the Array: ---
   const deleteItem = (e, id) => {
-    console.log(id);
-    console.log(e.target.id);
     let deepItems = _.cloneDeep(items)
     deepItems.splice(e.target.id, 1)
-    console.log(deepItems);
     setItems(deepItems)
   }
 
-  useEffect(() => {
-    console.log(items, title);
-  }, [items, title])
-
   // --- Save to Firebase // Discard Changes: --- 
   
-  const restoreStates = () => {
+  const restoreStates = () => {  // is this even needed?
     setNewItem("")
-    setItems(originalItems)
-    setTitle(originalTitle)
+    // setItems(originalItems)      // THIS WAS FUCKING ME UP SOMEHOW with displaying wrong item removed?!
   }
 
   const saveChanges = () => {
     // TO DO    -> THROW PROMPT BEFORE TRIGERRING BELOW
 
-    // DONE THIS WAY TO PREVENT UNNECESSARY FIREBASE FILE UPDATES - does this make sense? 
-    // Or should I simply update both of the below at once, no matter the updated info?
     if (items !== originalItems) {
       updateDocument("lists", docID, "items", items)
     }
-    if (items !== originalTitle) {
+    if (items !== originalTitle) {   // why does this trigger anyway?
       updateDocument("lists", docID, "title", title)
     }
     restoreStates()
@@ -122,15 +112,26 @@ export const List = (listID) => {
     editModeToggleButtonRef.current.classList.toggle('button-active')
   }
 
+  // Func to pass to Item.js to delete that item
+  const updateItem = (id, value) => {
+    const tempItems = _.cloneDeep(items)
+    tempItems[id] = value
+    setItems(tempItems)
+  }
 
   // ---------------------------
 
   return (
     <div className="list">
-      <img src={arrow_left_icon} onClick={toggleDisplay} alt="go back to lists button"/>
 
       <div className="list-ctrl-buttons">
         {/* TOGGLE LIST EDIT MODE: */}
+        <img 
+          src={arrow_left_icon} 
+          onClick={toggleDisplay} 
+          alt="go back to lists button"
+          className="icon icon-medium"
+        />
         <img 
           src={edit_icon} 
           alt="list edit button" 
@@ -138,46 +139,57 @@ export const List = (listID) => {
           onClick={handleEditListButton}
           ref={editModeToggleButtonRef}
         />         
-        <img src={delete_icon} alt="list delete button" className="icon icon-medium" />
+        <img 
+          src={delete_icon} 
+          alt="list delete button" 
+          className="icon icon-medium" 
+        />
       </div>
 
       {data && title && (
-        <div className="list-container">
-          {/* TITLE CHANGE INPUT */}
-          {!editMode && <h3 className="list-title title-medium">{title}</h3>}
-          {editMode && <input 
-            type="text" 
-            className="edit-mode--input list-input" 
-            value={title}
-            onChange={handleTitleChange}
-          />}
+        <div className="list-container">         
 
-          {editMode && <article className="list-info">You can now modify the list. Press Enter once finished modifying each list position.</article>}
+          {/* DISPLAY MODE */}
+          {!editMode && (
+            <>
+              <h3 className="list-title title-medium">{title}</h3>
+              <ul className="list-table">
+                {items.map((item, index) => {
+                  return (
+                    <li key={index} id={index} className="list-position-container">
+                      <p className="list-position">{item}</p>
+                    </li>
+                  )
+                })}
+              </ul>
+            </>
+          )}
 
-          <ul className="list-table">
+          {/*  --------------------  */}
 
-            {/* DISPLAY OF CURRENT LIST */}
-            {!editMode && <>
-              {items.map((item, index) => {
-                return (
-                  <li key={index} id={index} className="list-position-container">
-                    <p className="list-position">{item}</p>
-                  </li>
-                )
-              })}
-            </>}
-
-            {/* EDITABLE VERSION OF CURRENT LIST */}
-            {editMode && <>
-              {items && <article>{items} WTF</article>}
-              {items.map((item, index) => {
-                return (
-                  <div key={index} value={index}>
-                    <Item item={item} index={index} data={items}/>
-                    <img src={delete_icon} alt="item delete button" className="icon icon-small" onClick={deleteItem} id={index} />
-                  </div>
-                )
-              })}
+          {/* EDIT MODE */}         
+          {editMode && (
+            <>
+              {/* TITLE CHANGE INPUT */}
+              <input 
+                type="text" 
+                className="edit-mode--input list-input" 
+                value={title}
+                onChange={handleTitleChange}
+              />
+              <article className="list-info">You can now modify the list. Press Enter once finished modifying each list position.</article>
+              <ul className="list-table">
+                {/* EDITABLE VERSION OF CURRENT LIST */}
+                  {items.map((item, index) => {
+                    return (
+                      <li key={index} value={index}>
+                        <Item item={item} value={index} updateItem={updateItem} />
+                        <img src={delete_icon} alt="item delete button" className="icon icon-small" onClick={deleteItem} id={index} />
+                      </li>
+                    )
+                  })}
+              </ul>
+              {/* ADD NEW ITEM: */}
               <div>
                 <input
                   type="text"
@@ -186,10 +198,11 @@ export const List = (listID) => {
                 />
                 <img src={add_icon} alt="item edit save button" className="icon icon-small" onClick={addNewItem} />
               </div>
-            </>}
-          </ul>
-          {editMode && <button className="btn btn-list-submit" onClick={saveChanges}>Save Changes</button>}
-          {editMode && <button className="btn btn-list-submit" onClick={discardChanges}>Discard Changes</button>}
+              {/* BUTTONS: */}
+              {editMode && <button className="btn btn-list-submit" onClick={saveChanges}>Save Changes</button>}
+              {editMode && <button className="btn btn-list-submit" onClick={discardChanges}>Discard Changes</button>}
+            </>
+          )}          
         </div>
       )}
       {/* {processing && <Loader />} */}

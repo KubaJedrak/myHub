@@ -1,18 +1,17 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { useAuthContext} from '../../hooks/useAuthContext'
+import { ListContext } from '../../context/ListContext'
 import { useSetDocument } from '../../hooks/useSetDocument'
 import { getDatabase, ref, child, push } from "firebase/database"
-import { useNavigate } from "react-router-dom";
 import  delete_icon from "../../icons/delete_icon.svg"
 
 
 export const ListCreate = () => {
-
-  const navigate = useNavigate()
   const _ = require('lodash');
 
   const {user} = useAuthContext()
   const {setDocument} = useSetDocument()
+  const { toggleDisplay, toggleSingle } = useContext(ListContext)
 
   const [items, setItems] = useState([])
   const [newTask, setNewTask] = useState("")
@@ -51,7 +50,7 @@ export const ListCreate = () => {
     setDocument("lists", newPostKey, payload)
     setListTitle("")
     setItems([])
-    navigate("/lists")
+    toggleDisplay()
   }
 
   const handleDeleteTask = (e) => {

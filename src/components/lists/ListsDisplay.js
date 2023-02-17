@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom"
 import { ListContext } from "../../context/ListContext"
 import VerifyPrompt from "../utility/VerifyPrompt";
 import delete_icon from "../../icons/delete_icon.svg"
@@ -39,7 +38,7 @@ export const ListsDisplay = () => {
       deleteList(listToDelete)
       setDeleteApproved(false)
     }
-  }, [deleteApproved, deleteList, listToDelete]) // why should I add these as dependencies when they never change anyway?
+  }, [deleteApproved, deleteList, listToDelete]) 
 
   // --------------------------
 

@@ -2,9 +2,8 @@ import { useState } from "react"
 import add_icon from "../../icons/save_icon.svg"
 import close_icon from "../../icons/close_icon.svg"
 
-export const Item = ({ item, index, data }) => {
+export const Item = ({ item, value, updateItem }) => {
 
-  const [listItem, setListItem] = useState(item)
   const [editMode, setEditMode] = useState(false)
   const [newItemValue, setNewItemValue] = useState("")
 
@@ -19,40 +18,15 @@ export const Item = ({ item, index, data }) => {
     setNewItemValue(e.target.value)
   }
 
-  const discardChanges = () => {
+  // Save/Discard changes to List Item
+  const saveChanges = () => { 
+    updateItem(value, newItemValue)
     setEditMode(false)
     clearStates()
   }
 
-
-  // --- Items: --- 
-
-  // const handleUpdateItem = (e) => {
-
-
-  //   if (e.keyCode === 13) {
-  //     saveItemChanges()
-  //   }    
-
-  //   if (e.keyCode === 27) {
-  //     discardItemChanges()
-  //   }
-  // }
-
-  // 
-
-  // Save changes to List Item
-  const saveChanges = () => { 
-    const tempData = data
-
-    if (newItemValue !== "") {
-      tempData[index] = newItemValue    
-      setListItem(newItemValue)
-      setEditMode(false)
-    } else {
-      // TO DO - display a prompt?
-    }
-
+  const discardChanges = () => {
+    setEditMode(false)
     clearStates()
   }
 
@@ -62,20 +36,19 @@ export const Item = ({ item, index, data }) => {
   }
 
   return (
-    
-    <li key={index} className="list-position-container" >
 
+    <div key={value} className="list-position-container" >
       {!editMode && (
-        <div key={index}>
-          <p onClick={toggleEditMode}>{listItem}</p>          
+        <div key={value}>
+          <p onClick={toggleEditMode}>{item}</p>          
         </div>
       )}
 
       {editMode && (
-        <div key={index} >
+        <div key={value} >
           <input 
             type="text"
-            placeholder={listItem}
+            placeholder={item}
             value={newItemValue}
             onChange={handleItemChange}
           />
@@ -83,7 +56,7 @@ export const Item = ({ item, index, data }) => {
           <img src={close_icon} alt="item edit cancel button" className="icon icon-small" onClick={discardChanges} />
         </div>
       )}
-      
-    </li>
+    </div>
+
   )
 }

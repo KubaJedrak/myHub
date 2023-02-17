@@ -45,7 +45,7 @@ export const ListContextProvider = ({ children }) => {
       deleteDoc(doc(db, "lists", listToDelete))
     } 
     catch(er) {
-      throw Error (er)
+      throw new Error (er)
     }
   }
 
@@ -88,7 +88,7 @@ export const ListContextProvider = ({ children }) => {
     <>
       {user && (
         <ListContext.Provider value={dataPack}>
-        {children}
+          {children}
         </ListContext.Provider>
       )}
       {!user && <p>Please log in to access available lists</p>}
