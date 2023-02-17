@@ -95,10 +95,13 @@ export const List = (listID) => {
   const saveChanges = () => {
     // TO DO    -> THROW PROMPT BEFORE TRIGERRING BELOW
 
-    if (items !== originalItems) {
+    if (items != originalItems) {
+      console.log("PING ITEMS");
       updateDocument("lists", docID, "items", items)
     }
-    if (items !== originalTitle) {   // why does this trigger anyway?
+    if (title != originalTitle) {   // why does this trigger anyway?
+      
+      console.log("PING TITLE");
       updateDocument("lists", docID, "title", title)
     }
     setEditMode(false)
