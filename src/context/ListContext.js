@@ -53,6 +53,7 @@ export const ListContextProvider = ({ children }) => {
     setCreateModeEnabled(false)
     setSingleModeEnabled(false)
     setDisplayModeEnabled(true)
+    setListID(null)
   }
   const toggleSingle = () => {
     setDisplayModeEnabled(false)
@@ -63,6 +64,7 @@ export const ListContextProvider = ({ children }) => {
     setDisplayModeEnabled(false)
     setSingleModeEnabled(false)
     setCreateModeEnabled(true)
+    setListID(null)
   }
 
   const passListID = (id) => {

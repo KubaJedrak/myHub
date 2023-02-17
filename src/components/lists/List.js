@@ -88,7 +88,8 @@ export const List = (listID) => {
   
   const restoreStates = () => {  // is this even needed?
     setNewItem("")
-    // setItems(originalItems)      // THIS WAS FUCKING ME UP SOMEHOW with displaying wrong item removed?!
+    setItems(originalItems)      // THIS WAS FUCKING ME UP SOMEHOW with displaying wrong item removed (when added to saveChanges)?!
+    setTitle(originalTitle)
   }
 
   const saveChanges = () => {
@@ -100,8 +101,9 @@ export const List = (listID) => {
     if (items !== originalTitle) {   // why does this trigger anyway?
       updateDocument("lists", docID, "title", title)
     }
-    restoreStates()
     setEditMode(false)
+    setOriginalItems(items)
+    setOriginalTitle(title)
     // change back the CSS state of the icon to inactive
     editModeToggleButtonRef.current.classList.toggle('button-active')
   }
