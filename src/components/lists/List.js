@@ -18,8 +18,8 @@ import { ListContext } from "../../context/ListContext";
   
 export const List = (listID) => {
   
-  const { data, error } = useContext(ListContext)
-  const { toggleDisplay } = useContext(ListContext)
+  const { data, error, popUpData: popUpDataDelete, togglePopup } = useContext(ListContext)
+  const { toggleDisplay, displayPopup, passListToDeleteID } = useContext(ListContext)
   const {updateDocument, error: updateError, isPending: updateIsPending} = useUpdateDocument()
   
   const _ = require('lodash');
@@ -33,6 +33,9 @@ export const List = (listID) => {
   const [originalItems, setOriginalItems] = useState(items)
   const [newItem, setNewItem] = useState("")
   const [editMode, setEditMode] = useState(false)
+  const [toggleEditPopup, setToggleEditPopup] = useState(false)
+  const [toggleDiscardPopup, setToggleDiscardPopup] = useState(false)
+
 
   const editModeToggleButtonRef = useRef(null)
 
@@ -41,7 +44,6 @@ export const List = (listID) => {
   // --- Toggle Edit State: --- 
   const handleEditListButton = (e) => {
 
-    restoreStates()
 
     if (!editMode) {
       setEditMode(true)
@@ -49,11 +51,9 @@ export const List = (listID) => {
     } 
 
     if (editMode ) {
+      restoreStates()
 
       setItems(originalItems)
-      
-      // TO DO -  ADD CONDITION HERE (to prevent display of discarded changes)
-
       // TO DO - throw prompt to confirm changes!
 
       setEditMode(false) 
@@ -86,22 +86,19 @@ export const List = (listID) => {
 
   // --- Save to Firebase // Discard Changes: --- 
   
-  const restoreStates = () => {  // is this even needed?
+  const restoreStates = () => {
     setNewItem("")
-    setItems(originalItems)      // THIS WAS FUCKING ME UP SOMEHOW with displaying wrong item removed (when added to saveChanges)?!
+    setItems(originalItems)
     setTitle(originalTitle)
   }
 
   const saveChanges = () => {
     // TO DO    -> THROW PROMPT BEFORE TRIGERRING BELOW
 
-    if (items != originalItems) {
-      console.log("PING ITEMS");
+    if (items != originalItems) { // do not deep equal
       updateDocument("lists", docID, "items", items)
     }
-    if (title != originalTitle) {   // why does this trigger anyway?
-      
-      console.log("PING TITLE");
+    if (title != originalTitle) {
       updateDocument("lists", docID, "title", title)
     }
     setEditMode(false)
@@ -117,11 +114,60 @@ export const List = (listID) => {
     editModeToggleButtonRef.current.classList.toggle('button-active')
   }
 
+  // --- Delete List: ---
+  const handleDeleteList = (e) => {
+    passListToDeleteID(id)
+    displayPopup()
+  }
+
   // Func to pass to Item.js to delete that item
   const updateItem = (id, value) => {
     const tempItems = _.cloneDeep(items)
     tempItems[id] = value
     setItems(tempItems)
+  }
+
+  // --- Pop-Up Stuff: ---
+  const showPopupEdit = () => {
+    setToggleEditPopup(true)
+  }
+  
+  const acceptEditFunc = () => {
+    saveChanges()
+    setToggleEditPopup(false)
+  }
+
+  const declineEditFunc = () => {
+    setToggleEditPopup(false)
+  }
+
+  const popUpDataEdit = {
+    title: "Please Confirm",
+    message: "Are you sure you want to change this list?",
+    acceptFunc: acceptEditFunc,
+    declineFunc: declineEditFunc
+  }
+
+  // --- 
+
+  const showPopupDiscard = () => {
+    setToggleDiscardPopup(true)
+  }
+  
+  const acceptDiscardFunc = () => {
+    discardChanges()
+    setToggleDiscardPopup(false)
+  }
+
+  const declineDiscardFunc = () => {
+    setToggleDiscardPopup(false)
+  }
+
+  const popUpDataDiscard = {
+    title: "Please Confirm",
+    message: "Are you sure you want to discard changes made?",
+    acceptFunc: acceptDiscardFunc,
+    declineFunc: declineDiscardFunc
   }
 
   // ---------------------------
@@ -147,7 +193,8 @@ export const List = (listID) => {
         <img 
           src={delete_icon} 
           alt="list delete button" 
-          className="icon icon-medium" 
+          className="icon icon-medium"
+          onClick={handleDeleteList} 
         />
       </div>
 
@@ -204,14 +251,18 @@ export const List = (listID) => {
                 <img src={add_icon} alt="item edit save button" className="icon icon-small" onClick={addNewItem} />
               </div>
               {/* BUTTONS: */}
-              {editMode && <button className="btn btn-list-submit" onClick={saveChanges}>Save Changes</button>}
-              {editMode && <button className="btn btn-list-submit" onClick={discardChanges}>Discard Changes</button>}
+              {editMode && <button className="btn btn-list-submit" onClick={showPopupEdit}>Save Changes</button>}
+              {editMode && <button className="btn btn-list-submit" onClick={showPopupDiscard}>Discard Changes</button>}
             </>
           )}          
         </div>
       )}
       {/* {processing && <Loader />} */}
       {!data && <p>Oopsie! No data available</p>}
+
+      {togglePopup && <VerifyPrompt data={popUpDataDelete} />}
+      {toggleEditPopup && <VerifyPrompt data={popUpDataEdit} />}
+      {toggleDiscardPopup && <VerifyPrompt data={popUpDataDiscard} />}      
     </div>
   )
 }

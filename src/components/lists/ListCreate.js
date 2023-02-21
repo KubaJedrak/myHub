@@ -4,6 +4,9 @@ import { ListContext } from '../../context/ListContext'
 import { useSetDocument } from '../../hooks/useSetDocument'
 import { getDatabase, ref, child, push } from "firebase/database"
 import  delete_icon from "../../icons/delete_icon.svg"
+import arrow_left_icon from "../../icons/arrow_left_icon.svg"
+import VerifyPrompt from "../utility/VerifyPrompt"
+import InfoPrompt from "../utility/InfoPrompt"
 
 
 export const ListCreate = () => {
@@ -16,6 +19,9 @@ export const ListCreate = () => {
   const [items, setItems] = useState([])
   const [newTask, setNewTask] = useState("")
   const [listTitle, setListTitle] = useState("")
+  const [togglePopupCreate, setTogglePopupCreate] = useState(false)
+  const [togglePopupDiscard, setTogglePopupDiscard] = useState(false)
+  const [togglePopupInfo, setTogglePopupInfo] = useState(false)
 
   // add List Title
   const handleListTitle = (e) => {
@@ -50,7 +56,6 @@ export const ListCreate = () => {
     setDocument("lists", newPostKey, payload)
     setListTitle("")
     setItems([])
-    toggleDisplay()
   }
 
   const handleDeleteTask = (e) => {
@@ -59,8 +64,82 @@ export const ListCreate = () => {
     setItems(deepItems)
   }
 
+  // --- Pop-Up Stuff: ---
+  const showPopupCreate = () => {
+    if (items.length > 0) {
+      setTogglePopupCreate(true)
+    }
+    
+    if (items.length == 0) {
+      setTogglePopupInfo(true)
+    }
+
+  }
+  
+  const acceptFuncCreate = () => {
+    handleSubmit()
+    setTogglePopupCreate(false)
+    toggleDisplay()
+  }
+
+  const declineFuncCreate = () => {
+    setTogglePopupCreate(false)
+  }
+
+  const popUpData = {
+    title: "Please Confirm",
+    message: "Are you sure you want to create this list?",
+    acceptFunc: acceptFuncCreate,
+    declineFunc: declineFuncCreate
+  }
+
+  // ---
+
+  const showPopupDiscard = () => {
+    setTogglePopupDiscard(true)
+  }
+  
+  const acceptDiscardFunc = () => {
+    goBack()
+    setTogglePopupDiscard(false)
+  }
+
+  const declineDiscardFunc = () => {
+    setTogglePopupDiscard(false)
+  }
+
+  const popUpDataDiscard = {
+    title: "Please Confirm",
+    message: "Are you sure you want to leave without creating a list?",
+    acceptFunc: acceptDiscardFunc,
+    declineFunc: declineDiscardFunc
+  }
+
+  const goBack = () => {
+    setItems([])
+    setNewTask("")
+    setListTitle("")
+    toggleDisplay()
+  }
+
+  // ---
+
+  const popUpInfo = {
+    title: "Warning",
+    message: "You can not create a list without any positions. Please add a position before attempting again.",
+    acceptFunc: () => {setTogglePopupInfo(false)}
+  }
+
   return (
     <div>
+      
+      <img 
+          src={arrow_left_icon} 
+          onClick={showPopupDiscard} 
+          alt="go back to lists button"
+          className="icon icon-medium"
+      />
+
       {/* REPLACE THE TITLE BELOW WITH A MODULE LATER? */}
       <h3> Create a new list </h3>
 
@@ -89,7 +168,12 @@ export const ListCreate = () => {
         <button>Add Position</button>
       </form>
 
-      <button type="submit" onClick={handleSubmit}>Add List</button>
+      <button type="submit" onClick={showPopupCreate}>Add List</button>
+      
+      {togglePopupCreate && <VerifyPrompt data={popUpData} />}
+      {togglePopupDiscard && <VerifyPrompt data={popUpDataDiscard} />}
+      {togglePopupInfo && <InfoPrompt data={popUpInfo} />}
+      
     </div>
   )
 }

@@ -1,44 +1,18 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { ListContext } from "../../context/ListContext"
 import VerifyPrompt from "../utility/VerifyPrompt";
 import delete_icon from "../../icons/delete_icon.svg"
 
 export const ListsDisplay = () => {
 
-  const {data} = useContext(ListContext)
-  const {deleteList, passListID} = useContext(ListContext)
-  const [togglePopup, setTogglePopup] = useState(false)
-  const [deleteApproved, setDeleteApproved] = useState(false)
-  const [listToDelete, setListToDelete] = useState(null)
+  const {data, popUpData, togglePopup} = useContext(ListContext)
+  const {passListID, displayPopup, passListToDeleteID} = useContext(ListContext)
   
   const handleDeleteList = (e) => {
     const listID = data[e.target.parentNode.value].docID
-    setListToDelete(listID)
-    setTogglePopup(true)
+    passListToDeleteID(listID)
+    displayPopup()
   }
-
-  const acceptFunc = () => {
-    setDeleteApproved(true)
-    setTogglePopup(false)
-  }
-
-  const declineFunc = () => {
-    setTogglePopup(false)
-  }
-
-  const popUpData = {
-    title: "Warning",
-    message: "Are you sure you want to remove this list?",
-    acceptFunc,
-    declineFunc
-  }
-
-  useEffect( () => {
-    if (deleteApproved) {
-      deleteList(listToDelete)
-      setDeleteApproved(false)
-    }
-  }, [deleteApproved, deleteList, listToDelete]) 
 
   // --------------------------
 

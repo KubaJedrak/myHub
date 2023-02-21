@@ -13,6 +13,10 @@ export const ListContextProvider = ({ children }) => {
   const [singleModeEnabled, setSingleModeEnabled] = useState(false)
   const [listID, setListID] = useState(null)
 
+  const [deleteApproved, setDeleteApproved] = useState(false)
+  const [listToDelete, setListToDelete] = useState(null)
+  const [togglePopup, setTogglePopup] = useState(false)
+
   const [error, setError] = useState(null)
   const {user} = useAuthContext()
 
@@ -49,6 +53,42 @@ export const ListContextProvider = ({ children }) => {
     }
   }
 
+  const passListID = (id) => {
+    setListID(id)
+  }
+
+  const acceptFunc = () => {
+    setDeleteApproved(true)
+    toggleDisplay()
+    setTogglePopup(false)
+  }
+
+  const declineFunc = () => {
+    setTogglePopup(false)
+    setListToDelete(null)
+  }
+
+  const passListToDeleteID = (id) => {
+    setListToDelete(id)
+  } 
+
+  const popUpData = {
+    title: "Warning",
+    message: "Are you sure you want to remove this list?",
+    acceptFunc,
+    declineFunc
+  }
+
+  useEffect( () => {
+    if (deleteApproved) {
+      deleteList(listToDelete)
+      setDeleteApproved(false)
+      setListToDelete(null)
+    }
+  }, [deleteApproved, listToDelete]) 
+
+  // ---
+
   const toggleDisplay = () => {
     setCreateModeEnabled(false)
     setSingleModeEnabled(false)
@@ -67,8 +107,12 @@ export const ListContextProvider = ({ children }) => {
     setListID(null)
   }
 
-  const passListID = (id) => {
-    setListID(id)
+  const displayPopup = () => {
+    setTogglePopup(true)
+  }
+
+  const hidePopup = () => {
+    setTogglePopup(false)
   }
 
   // file to be provided via context
@@ -84,6 +128,13 @@ export const ListContextProvider = ({ children }) => {
     toggleCreate,
     passListID,
     deleteList,
+    displayPopup,
+    hidePopup,
+    passListToDeleteID,
+    togglePopup,
+    listToDelete,
+    deleteApproved,
+    popUpData
   }
 
   return (
