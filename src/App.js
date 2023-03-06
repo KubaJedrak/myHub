@@ -8,8 +8,6 @@ import { Login } from './components/fsAuth/Login';
 import { Signup } from './components/fsAuth/Signup';
 import { ListsWrapper } from './components/lists/ListsWrapper';
 
-import { TestWrapper } from './components/test/TestWrapper'
-
 // styles
 
 
@@ -31,7 +29,6 @@ function App() {
             <Route path="/signup" exact element={<Signup />} />
             <Route path="/lists" exact element={<ListsWrapper />} />
 
-            {/* <Route path="/test" exact element={<TestWrapper />} /> */}
           </Routes>
         </BrowserRouter>
       )}
