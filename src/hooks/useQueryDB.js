@@ -2,7 +2,7 @@
 import { useState, useCallback, useEffect } from "react"
 
 
-import { collection, query, where, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase/config'
 
 export function useQueryDB() {

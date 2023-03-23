@@ -5,8 +5,8 @@ import { useSetDocument } from '../../hooks/useSetDocument'
 import { getDatabase, ref, child, push } from "firebase/database"
 import  delete_icon from "../../icons/delete_icon.svg"
 import arrow_left_icon from "../../icons/arrow_left_icon.svg"
-import VerifyPrompt from "../utility/VerifyPrompt"
-import InfoPrompt from "../utility/InfoPrompt"
+import VerifyPrompt from "../utility/prompts/VerifyPrompt"
+import InfoPrompt from "../utility/prompts/InfoPrompt"
 
 
 export const ListCreate = () => {

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useContext } from "react";
 
 import { useUpdateDocument } from "../../hooks/useUpdateDocument";
-import VerifyPrompt from "../utility/VerifyPrompt";
+import VerifyPrompt from "../utility/prompts/VerifyPrompt";
 import {Item} from "./Item"
 
 import delete_icon from "../../icons/delete_icon.svg"

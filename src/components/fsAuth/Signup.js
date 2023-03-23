@@ -8,13 +8,12 @@ export const Signup = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [displayName, setDisplayName] = useState("")  
-  const [city, setCity] = useState("")
   const { signup } = useSignup() 
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await signup(email, password, displayName, city)   
-    navigate("/")
+    await signup(email, password, displayName)   
+    navigate("/user-profile")
   }
   
   return (
@@ -41,16 +40,8 @@ export const Signup = () => {
             type="text" 
             value={displayName} 
             onChange={(e) => {setDisplayName(e.target.value)}}
-            placeholder="Your name"
+            placeholder="Choose your user name"
           />
-        </label>
-        <label>
-          <input 
-            type="text" 
-            value={city} 
-            onChange={(e) => {setCity(e.target.value)}}
-            placeholder="Your city"
-          />          
         </label>
         <button className="button">Register</button>
       </form>

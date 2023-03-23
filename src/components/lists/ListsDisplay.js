@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { ListContext } from "../../context/ListContext"
-import VerifyPrompt from "../utility/VerifyPrompt";
+import VerifyPrompt from "../utility/prompts/VerifyPrompt";
 import delete_icon from "../../icons/delete_icon.svg"
 
 export const ListsDisplay = () => {

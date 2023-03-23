@@ -1,41 +1,41 @@
 import { auth, createUserWithEmailAndPassword } from "../firebase/config";
 import { doc, setDoc } from 'firebase/firestore'
-
-import { useState, useEffect } from 'react'
-
 import { db } from '../firebase/config'
+import { useState, useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 
 export const useSignup = () => {
   const [error, setError] = useState(null)
   const [isPending, setIsPending] = useState(false)
   const [isCancelled, setIsCancelled] = useState(false)
 
-
-  const createUserProfile = async (name, city, response) => {
+  const createUserProfile = async (userName, response) => {
     await setDoc(doc(db, "users", response.user.uid), {
-      firstName: name,
-      // lastName: null,
-      city: city,
+      userData: {
+        firstName: "",
+        lastName: "",
+        userName: userName,
+        city: "",
+      },
       userID: response.user.uid,
-      preferences: {}
+      preferences: {
+        isCityShown: false,
+        isUserNameShown: false
+      }
     })
   }
   
-  const signup = async (email, password, name, city) => {
+  const signup = async (email, password, userName) => {
     setError(null)
     setIsPending(true)
       
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password)
-      const secondResponse = createUserProfile(name, city, response)
-      console.log(secondResponse) //???
+      const secondResponse = await createUserProfile(userName, response)
 
       if (!response) {
         throw new Error('Could not complete sign up')
       }
-
-      // add display setName
-      // await response.user.updateProfile( {displayName} )
       
       // Abort controller
       if (!isCancelled) {
@@ -44,7 +44,6 @@ export const useSignup = () => {
       }    
     } 
     catch(error) {
-      // Abort Controller
       if (!isCancelled) {
         setError(error.message)
         setIsPending(false)

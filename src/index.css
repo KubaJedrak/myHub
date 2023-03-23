@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -86,8 +90,46 @@ body {
   background-color: rgba(6, 159, 219, 0.5);
 }
 
+/* TEXT FIELDS: */
+
+.text-field {
+  
+}
+
+.text-field--small {
+  width: 25%;
+}
 
 
+
+/* HEADERS: */
+
+.header-big {
+  min-width: 100%;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  align-content: space-between;
+  flex-direction: column;
+}
+
+.container-big {
+  max-width: 80%;
+  margin: 20px 100px;
+}
+
+.container-medium {
+  max-width: 50%;
+  margin: 15px 50px;
+}
+
+.container-small {
+  max-width: 20%;
+  margin: 10px 20px;
+}
 
 /* --- MISC --- */ 
 
