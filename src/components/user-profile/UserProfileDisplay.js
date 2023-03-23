@@ -74,21 +74,12 @@ export const UserProfileDisplay = ({ data }) => {
     switch (true) {
       case didUserDataChange:
         updateDocument("users", userID, "userData", userData)
-        break;
       case didPreferencesChange:
         updateDocument("users", userID, "preferences", preferences)
-        break;
       default:
         break;
     }
   }
-
-  useEffect(() => {
-    console.log(data.preferences, data.userData);
-
-    console.log(typeof isCityShown);
-    console.log(typeof isUserShown);
-  }, [data])
 
   return (
     <ContainerBig>
