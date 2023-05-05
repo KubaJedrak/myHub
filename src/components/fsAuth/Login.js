@@ -13,7 +13,7 @@ export const Login = () => {
     e.preventDefault()
     login(email, password)
 
-    navigate("/")
+    navigate(-1)
   }
 
   return (

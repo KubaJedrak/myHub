@@ -13,7 +13,7 @@ export const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     await signup(email, password, displayName)   
-    navigate("/user-profile")
+    navigate("/")    // user isnt updated on SIGNUP
   }
   
   return (
