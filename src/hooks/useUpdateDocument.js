@@ -17,7 +17,8 @@ export const useUpdateDocument = () => {
     try {
       const docRef = doc( db, collection, docName )
       updateConf = await updateDoc(docRef, {
-        [updatedPos]: updatedData
+        [updatedPos]: updatedData,
+        lastUpdatedOnDate: new Date()
       })
       if (!isCancelled) {
         setIsPending(false)

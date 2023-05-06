@@ -25,7 +25,9 @@ export const useSignup = () => {
       preferences: {
         isCityShown: false,
         isUserNameShown: false
-      }
+      },
+      createdOnDate: new Date(),
+      lastUpdatedOnDate: new Date()
     })
   }
   
