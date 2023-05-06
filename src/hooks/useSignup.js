@@ -2,9 +2,13 @@ import { auth, createUserWithEmailAndPassword } from "../firebase/config";
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { useState, useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
+import { useAuthContext } from './useAuthContext'
+
 
 export const useSignup = () => {
+
+  const {dispatch} = useAuthContext() 
+
   const [error, setError] = useState(null)
   const [isPending, setIsPending] = useState(false)
   const [isCancelled, setIsCancelled] = useState(false)
@@ -26,12 +30,14 @@ export const useSignup = () => {
   }
   
   const signup = async (email, password, userName) => {
+
     setError(null)
     setIsPending(true)
       
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password)
       const secondResponse = await createUserProfile(userName, response)
+      dispatch( {type: 'SIGNUP', payload: response.user} )  
 
       if (!response) {
         throw new Error('Could not complete sign up')

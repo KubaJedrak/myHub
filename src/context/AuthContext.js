@@ -9,6 +9,8 @@ export const authReducer = (state, action) => {
       return { ...state, user: action.payload }
     case "LOGOUT": 
       return { ...state, user: null }
+    case "SIGNUP": 
+      return { ...state, user: action.payload }  
     case "AUTH_IS_READY": 
       return { ...state, user: action.payload, authIsReady: true }
     default: 
@@ -24,8 +26,6 @@ export const AuthContextProvider = ({children}) => {
 
   useEffect( () => {
     const unsub = auth.onAuthStateChanged( user => {
-      console.time('type: "AUTH_IS_READY"', "payload: ", user);
-      console.timeEnd("ping")
       dispatch( {type: "AUTH_IS_READY", payload: user})
       unsub()
     })

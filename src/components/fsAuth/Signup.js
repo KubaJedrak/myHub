@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import { useSignup } from "../../hooks/useSignup";
 
@@ -13,7 +13,7 @@ export const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     await signup(email, password, displayName)   
-    navigate("/")    // user isnt updated on SIGNUP
+    navigate("/user-profile")
   }
   
   return (
