@@ -29,3 +29,23 @@ export const ContainerBig = ({children}) => {
     </div>
   )
 }
+
+export const ContainerTall = ({children}) => {
+  return(
+    <div
+      className="container container-tall"
+    >
+      {children}
+    </div>
+  )
+}
+
+export const ContainerWide = ({children}) => {
+  return(
+    <div
+      className="container container-wide"
+    >
+      {children}
+    </div>
+  )
+}

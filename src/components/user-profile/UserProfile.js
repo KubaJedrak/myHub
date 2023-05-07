@@ -11,10 +11,7 @@ import { useEffect, useState } from 'react';
 
 export const UserProfile = () => {
 
-  const navigate = useNavigate()
   const {user} = useAuthContext()
-
-  const [userInfo, setUserInfo] = useState(user)
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
 

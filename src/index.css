@@ -111,23 +111,41 @@ body {
 .container {
   margin: 0 auto;
   padding: 10px;
-  display: flex;
+  display: inline-flex;
   align-content: space-between;
   flex-direction: column;
 }
 
 .container-big {
-  max-width: 80%;
-  margin: 20px 100px;
+  min-width: 80%;
+  min-height: 200px;
+  margin: 20px 50px;
 }
 
 .container-medium {
-  max-width: 50%;
-  margin: 15px 50px;
+  min-width: 50%;
+  min-height: 150px;
+  margin: 15px 25px;
 }
 
 .container-small {
-  max-width: 20%;
+  min-width: 20%;
+  min-height: 100px;
+  margin: 10px 10px;
+}
+
+.container-wide {
+  min-width: 80%;
+  min-height: 100px;
+  margin: 10px 20px;
+
+  border: 1px solid #000000;
+  border-radius: 10px;
+}
+
+.container-tall {
+  min-width: 20%;
+  min-height: 500px;
   margin: 10px 20px;
 }
 

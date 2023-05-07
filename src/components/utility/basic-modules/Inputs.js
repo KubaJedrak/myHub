@@ -1,12 +1,14 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { ContainerBig, ContainerMedium, ContainerSmall, ContainerWide, ContainerTall } from "./Containers"
 
-export const StringInput = ({value, func}) => {
+export const StringInput = ({value, func, inputType}) => {
   return (
     <div>
       <input 
         type="text"
         name={value} 
         value={value}
+        placeholder={inputType}
         onChange={func} 
         required 
       />
@@ -21,21 +23,52 @@ export const CheckboxInputSingle = ({legend, value, functionPassed:functionPasse
   }
   
   return (
-    <div>
-      <div> 
-        <input
-          type="checkbox"
-          checked={value}
-          value={value}
-          onChange={handleChange} 
-        />
-        <label>{legend}</label>
-      </div>
+    <div> 
+      <input
+        type="checkbox"
+        checked={value}
+        value={value}
+        onChange={handleChange} 
+      />
+      <label>{legend}</label>
     </div>
   )
 }
 
 
+export const ImageInput = ({functionPassed:functionPassedFromParent, value}) => {
+
+
+  const [file, setFile] = useState(null)
+
+  const handleChange = (e) => {
+    setFile(e.target.files[0])
+  }
+
+  const handleUpdate = (e) => {
+    functionPassedFromParent(file)
+  }
+
+  useEffect(() => {
+    if (file) {
+      console.log("PING");
+      handleUpdate(file)
+    }
+  }, [file])
+
+  return (
+    <ContainerBig>
+      <ContainerWide>
+        <h5>Please select your profile image</h5>
+        <input 
+          type="file" 
+          value={value}
+          onChange={handleChange} 
+        />
+      </ContainerWide>     
+    </ContainerBig>
+  )
+}
 
 
 // WIPS!
