@@ -68,15 +68,10 @@ export const UserProfileDisplay = ({ data }) => {
 
       
   // --- Image input: ---
-  const handleProfileImage = () => {
-    
-    setProfileImageRef(ref(storage, `profile-images/profile-image-${userID}`))  
-    setProfileImage()
-
+  const handleProfileImageChange = (e) => {
+    setProfileImage(e.target.files[0])
+    setProfileImageRef(ref(storage, `profile-images/user-${userID}`))  
     setDidProfileImageChange(true)
-
-    // uploadBytes(storageRef, file).then((snapshot) => {
-    //   console.log('Uploaded a blob or file!');
   }
 
   // --- Update Function: ---
@@ -91,7 +86,8 @@ export const UserProfileDisplay = ({ data }) => {
       city: cityInfo,
       firstName: firstNameInfo,
       lastName: lastNameInfo,
-      userName: userNameInfo
+      userName: userNameInfo,
+      profileImageURL: `profile-images/user-${userID}` || null
     }
       
     // --- update checks: ---
@@ -99,25 +95,36 @@ export const UserProfileDisplay = ({ data }) => {
       case didUserDataChange:
         updateDocument("users", userID, "userData", userData)
         setDidDataChange(false)
-      case didPreferencesChange:
+      case didPreferencesChange: // eslint-disable-line
         updateDocument("users", userID, "preferences", preferences)
         setDidPreferencesChange(false)
-      case didProfileImageChange:
-        uploadBytes(profileImageRef, profileImage).then(console.log("Image uploaded"))
+      case didProfileImageChange: // eslint-disable-line
+        uploadBytes(profileImageRef, profileImage)
+        updateDocument("users", userID, "userData", userData)
         setDidProfileImageChange(false)
-      default:
+      default: // eslint-disable-line
         break;
     }
   }
+
+  useEffect(() => {
+    console.log(profileImage);
+    console.log(profileImageRef);
+    console.log();
+  })
 
   return (
     <ContainerBig>
       <h1 width="100%">User: {userName}</h1>
 
       <ContainerWide>
-        <ImageInput functionPassed={handleProfileImage} />
+        <h5>Please select your profile image</h5>
+        <input 
+          type="file"
+          onChange={handleProfileImageChange} 
+        />
         <ContainerSmall>          
-        
+          
         </ContainerSmall>
       </ContainerWide>
 

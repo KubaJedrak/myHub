@@ -36,22 +36,29 @@ export const CheckboxInputSingle = ({legend, value, functionPassed:functionPasse
 }
 
 
+// DOESNT WORK DUE TO .files not being readable from outside the component on initial render
 export const ImageInput = ({functionPassed:functionPassedFromParent, value}) => {
 
-
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState([])
 
   const handleChange = (e) => {
-    setFile(e.target.files[0])
+
+    const selectedFiles = Array.prototype.slice.call(e.target.files)
+
+    setFile(selectedFiles)
+    functionPassedFromParent()
+
+    console.log(selectedFiles);
   }
 
-  const handleUpdate = (e) => {
+  const handleUpdate = () => {
+    console.log(file);
     functionPassedFromParent(file)
   }
 
   useEffect(() => {
+    console.log(file);
     if (file) {
-      console.log("PING");
       handleUpdate(file)
     }
   }, [file])
