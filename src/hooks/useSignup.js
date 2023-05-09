@@ -20,6 +20,7 @@ export const useSignup = () => {
         lastName: "",
         userName: userName,
         city: "",
+        profileImageURL: ""
       },
       userID: response.user.uid,
       preferences: {

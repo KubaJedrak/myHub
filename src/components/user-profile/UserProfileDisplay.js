@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { StringInput, CheckboxInputSingle, ImageInput } from "../utility/basic-modules/Inputs"
 import { ContainerSmall, ContainerMedium, ContainerBig, ContainerWide } from "../utility/basic-modules/Containers"
@@ -9,12 +9,12 @@ import { useUpdateDocument } from "../../hooks/useUpdateDocument"
 
 
 export const UserProfileDisplay = ({ data }) => {
+  
+  const storage = getStorage()
 
   const { city, firstName, lastName, userName } = data.userData
   const preferences = data.preferences
   const userID = data.userID
-
-  const storage = getStorage()
 
   const [cityInfo, setCityInfo] = useState(city)
   const [firstNameInfo, setFirstNameInfo] = useState(firstName)
@@ -23,6 +23,8 @@ export const UserProfileDisplay = ({ data }) => {
 
   const [profileImage, setProfileImage] = useState(null)
   const [profileImageRef, setProfileImageRef] = useState("")
+  const [profileImageURL, setProfileImageURL] = useState("")
+  const [profileImageUpdated, setProfileImageUpdated] = useState(false)
 
   const [isUserShown, setIsUserShown] = useState(preferences.isUserShown)
   const [isCityShown, setIsCityShown] = useState(preferences.isCityShown)
@@ -32,7 +34,6 @@ export const UserProfileDisplay = ({ data }) => {
   const [didProfileImageChange, setDidProfileImageChange] = useState(false)
 
   const { updateDocument, error: updateError, isPending: updateIsPending } = useUpdateDocument()
-
 
   // --- String inputs: ---
   const handleCityChange = (e) => {
@@ -87,7 +88,6 @@ export const UserProfileDisplay = ({ data }) => {
       firstName: firstNameInfo,
       lastName: lastNameInfo,
       userName: userNameInfo,
-      profileImageURL: `profile-images/user-${userID}` || null
     }
       
     // --- update checks: ---
@@ -100,18 +100,25 @@ export const UserProfileDisplay = ({ data }) => {
         setDidPreferencesChange(false)
       case didProfileImageChange: // eslint-disable-line
         uploadBytes(profileImageRef, profileImage)
-        updateDocument("users", userID, "userData", userData)
         setDidProfileImageChange(false)
+        setProfileImageUpdated(true)
+
+
       default: // eslint-disable-line
         break;
     }
   }
 
   useEffect(() => {
-    console.log(profileImage);
-    console.log(profileImageRef);
-    console.log();
-  })
+    setTimeout( () => {
+      getDownloadURL(ref(storage, `profile-images/user-${userID}`))
+      .then((url) => {
+        setProfileImageURL(url)
+      })  
+      .then(setProfileImageUpdated(false))
+      .catch((error) => {console.log(error);})
+    }, 800)
+  }, [profileImageUpdated])
 
   return (
     <ContainerBig>
@@ -124,7 +131,12 @@ export const UserProfileDisplay = ({ data }) => {
           onChange={handleProfileImageChange} 
         />
         <ContainerSmall>          
-          
+          {profileImageURL.length > 0 && 
+            <>
+              <p>Current profile image:</p>
+              <img src={profileImageURL} width="100px" height="100px" />
+            </>
+          }
         </ContainerSmall>
       </ContainerWide>
 
